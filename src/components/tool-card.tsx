@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Star, Bot, Heart } from "lucide-react";
 import type { Tool } from "@/lib/tools-data";
@@ -78,13 +79,16 @@ export default function ToolCard({ tool }: { tool: Tool }) {
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.06] ring-1 ring-white/[0.1]">
               {iconSrc ? (
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.92] ring-1 ring-black/10">
-                  <img
+                  <Image
                     src={iconSrc}
                     alt={tool.name}
+                    width={28}
+                    height={28}
                     className="h-7 w-7 rounded-md object-contain"
                     style={{ filter: "brightness(1.05) contrast(1.05)" }}
                     loading="lazy"
                     referrerPolicy="no-referrer"
+                    sizes="28px"
                   />
                 </div>
               ) : (

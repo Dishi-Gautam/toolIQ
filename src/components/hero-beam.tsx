@@ -1,11 +1,7 @@
 "use client";
 
-import {
-  motion,
-  useMotionValue,
-  useTransform,
-  animate,
-} from "framer-motion";
+import Image from "next/image";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect } from "react";
 
 function OrbitRing({ ringNum }: { ringNum: 1 | 2 }) {
@@ -14,7 +10,7 @@ function OrbitRing({ ringNum }: { ringNum: 1 | 2 }) {
 
   return (
     <>
-      {tools.map((tool, index) => (
+      {tools.map((tool) => (
         <OrbitingLogo
           key={tool.name}
           icon={tool.icon}
@@ -80,13 +76,16 @@ function OrbitingLogo({
         title={name}
       >
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.92] ring-1 ring-black/10">
-          <img
+          <Image
             src={icon}
             alt={name}
+            width={28}
+            height={28}
             className="h-7 w-7 object-contain"
             style={{ filter: "brightness(1.05) contrast(1.05)" }}
             draggable={false}
             referrerPolicy="no-referrer"
+            sizes="28px"
           />
         </div>
       </div>
@@ -124,13 +123,7 @@ const RING_CONFIG = {
   2: { radius: 195, duration: 100, direction: -360 },
 };
 
-export default function HeroBeam({
-  toolCount,
-}: {
-  toolCount: number;
-  categoryCount: number;
-  collectionCount: number;
-}) {
+export default function HeroBeam() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       {/* Light beam cone */}
@@ -204,11 +197,15 @@ export default function HeroBeam({
               }}
             >
               {/* Use the actual ToolIQ logo from public/logo.svg */}
-              <img
+              <Image
                 src="/logo.svg"
                 alt="ToolIQ"
+                width={40}
+                height={40}
                 className="h-10 w-10 object-contain"
                 draggable={false}
+                sizes="40px"
+                priority
               />
             </motion.div>
           </div>

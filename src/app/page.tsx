@@ -92,11 +92,7 @@ export default async function Home() {
         <div className="pointer-events-none absolute -right-20 top-1/4 h-[400px] w-[400px] rounded-full bg-[radial-gradient(circle,rgba(56,189,248,0.06)_0%,transparent_60%)] blur-3xl" />
 
         {/* Light beam + orbiting tool icons */}
-        <HeroBeam
-          toolCount={tools.length}
-          categoryCount={categories.length}
-          collectionCount={collections.length}
-        />
+        <HeroBeam />
 
         <div className="relative mx-auto max-w-7xl">
           <div className="flex min-h-[60vh] items-center lg:min-h-[70vh]">
