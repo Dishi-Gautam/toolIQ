@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Bot, Heart } from "lucide-react";
+import { Star, Heart } from "lucide-react";
 import type { Tool } from "@/lib/tools-data";
 
 const LOGO_API_TOKEN = "pk_Q2U60apXTeeFjOBPbbJUCw";
 const logoDev = (domain: string) =>
   `https://img.logo.dev/${domain}?token=${LOGO_API_TOKEN}&size=80&format=png`;
+const DEFAULT_LOGO_DOMAIN = "logo.dev";
 
 const pricingColors: Record<string, string> = {
   Free: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
@@ -33,7 +34,7 @@ const NAME_TO_DOMAIN: Record<string, string> = {
   "hugging face": "huggingface.co",
 };
 
-function getLogoDevDomain(tool: Tool): string | null {
+function getLogoDevDomain(tool: Tool): string {
   // Prefer the tool's website domain when available.
   if (tool.website && tool.website !== "#") {
     try {
@@ -47,16 +48,12 @@ function getLogoDevDomain(tool: Tool): string | null {
 
   // Fallback: map well-known tool names to domains.
   const byName = NAME_TO_DOMAIN[tool.name.toLowerCase()];
-  return byName ?? null;
+  return byName ?? DEFAULT_LOGO_DOMAIN;
 }
 
-function getToolIcon(tool: Tool): string | null {
+function getToolIcon(tool: Tool): string {
   const domain = getLogoDevDomain(tool);
-  if (domain) return logoDev(domain);
-
-  // Last resort: if CSV logo is a valid URL, use it.
-  if (tool.logo && tool.logo.startsWith("http")) return tool.logo;
-  return null;
+  return logoDev(domain);
 }
 
 function formatViews(views: number): string {
@@ -77,23 +74,19 @@ export default function ToolCard({ tool }: { tool: Tool }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.06] ring-1 ring-white/[0.1]">
-              {iconSrc ? (
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.92] ring-1 ring-black/10">
-                  <Image
-                    src={iconSrc}
-                    alt={tool.name}
-                    width={28}
-                    height={28}
-                    className="h-7 w-7 rounded-md object-contain"
-                    style={{ filter: "brightness(1.05) contrast(1.05)" }}
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                    sizes="28px"
-                  />
-                </div>
-              ) : (
-                <Bot className="h-5 w-5 text-cyan-400/70" />
-              )}
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.92] ring-1 ring-black/10">
+                <Image
+                  src={iconSrc}
+                  alt={tool.name}
+                  width={28}
+                  height={28}
+                  className="h-7 w-7 rounded-md object-contain"
+                  style={{ filter: "brightness(1.05) contrast(1.05)" }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                  sizes="28px"
+                />
+              </div>
             </div>
             <div className="min-w-0">
               <h3 className="truncate text-sm font-semibold text-white transition-colors group-hover:text-cyan-300">

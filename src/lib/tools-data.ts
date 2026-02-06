@@ -31,7 +31,7 @@ export type Collection = {
 
 /* ── Paths ── */
 
-const TAAFT_CSV_PATH = path.join(process.cwd(), "theresanaiforthat.csv");
+const TAAFT_CSV_PATH = path.join(process.cwd(), "data.csv");
 
 /* ── Helpers ── */
 

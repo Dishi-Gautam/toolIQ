@@ -11,30 +11,53 @@ import {
   SlidersHorizontal,
   ChevronLeft,
   ChevronRight,
-  Bot,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Tool } from "@/lib/tools-data";
 
 const LOGO_API_TOKEN = "pk_Q2U60apXTeeFjOBPbbJUCw";
+const DEFAULT_LOGO_DOMAIN = "logo.dev";
 
-// Helper to get logo from logo.dev API
-function getToolLogo(tool: Tool): string | null {
-  // Try website domain for logo.dev
+const NAME_TO_DOMAIN: Record<string, string> = {
+  chatgpt: "openai.com",
+  openai: "openai.com",
+  claude: "claude.ai",
+  anthropic: "claude.ai",
+  gemini: "gemini.google.com",
+  "google gemini": "gemini.google.com",
+  github: "github.com",
+  copilot: "copilot.microsoft.com",
+  "github copilot": "copilot.microsoft.com",
+  midjourney: "midjourney.com",
+  perplexity: "perplexity.ai",
+  deepseek: "deepseek.com",
+  firefly: "adobe.com",
+  "adobe firefly": "adobe.com",
+  huggingface: "huggingface.co",
+  "hugging face": "huggingface.co",
+};
+
+function logoDev(domain: string): string {
+  return `https://img.logo.dev/${domain}?token=${LOGO_API_TOKEN}`;
+}
+
+function getLogoDevDomain(tool: Tool): string {
   if (tool.website && tool.website !== "#") {
     try {
       const url = new URL(tool.website);
-      const domain = url.hostname;
-      return `https://img.logo.dev/${domain}?token=${LOGO_API_TOKEN}`;
+      const host = url.hostname.replace(/^www\./, "");
+      if (host) return host;
     } catch {
-      // invalid url
+      // ignore
     }
   }
 
-  // Fallback to existing logo field
-  if (tool.logo && tool.logo.startsWith("http")) return tool.logo;
+  const byName = NAME_TO_DOMAIN[tool.name.toLowerCase()];
+  return byName ?? DEFAULT_LOGO_DOMAIN;
+}
 
-  return null;
+function getToolLogo(tool: Tool): string {
+  return logoDev(getLogoDevDomain(tool));
 }
 
 
@@ -350,7 +373,7 @@ export default function ToolsClient({ tools, categories }: Props) {
                         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.05] ring-1 ring-white/[0.08] overflow-hidden">
                           {(() => {
                             const logoSrc = getToolLogo(tool);
-                            return logoSrc ? (
+                            return (
                               <Image
                                 src={logoSrc}
                                 alt={tool.name}
@@ -361,8 +384,6 @@ export default function ToolsClient({ tools, categories }: Props) {
                                 sizes="28px"
                                 unoptimized
                               />
-                            ) : (
-                              <Bot className="h-5 w-5 text-cyan-400/70" />
                             );
                           })()}
                         </div>

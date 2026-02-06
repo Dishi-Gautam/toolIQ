@@ -65,6 +65,47 @@ const pricingColor: Record<string, string> = {
   Enterprise: "bg-violet-500/10 text-violet-400 border-violet-500/20",
 };
 
+const LOGO_API_TOKEN = "pk_Q2U60apXTeeFjOBPbbJUCw";
+const DEFAULT_LOGO_DOMAIN = "logo.dev";
+
+const NAME_TO_DOMAIN: Record<string, string> = {
+  chatgpt: "openai.com",
+  openai: "openai.com",
+  claude: "claude.ai",
+  anthropic: "claude.ai",
+  gemini: "gemini.google.com",
+  "google gemini": "gemini.google.com",
+  github: "github.com",
+  copilot: "copilot.microsoft.com",
+  "github copilot": "copilot.microsoft.com",
+  midjourney: "midjourney.com",
+  perplexity: "perplexity.ai",
+  deepseek: "deepseek.com",
+  firefly: "adobe.com",
+  "adobe firefly": "adobe.com",
+  huggingface: "huggingface.co",
+  "hugging face": "huggingface.co",
+};
+
+function logoDev(domain: string): string {
+  return `https://img.logo.dev/${domain}?token=${LOGO_API_TOKEN}`;
+}
+
+function getLogoDevDomain(tool: { name: string; website: string }): string {
+  if (tool.website && tool.website !== "#") {
+    try {
+      const url = new URL(tool.website);
+      const host = url.hostname.replace(/^www\./, "");
+      if (host) return host;
+    } catch {
+      // ignore
+    }
+  }
+
+  const byName = NAME_TO_DOMAIN[tool.name.toLowerCase()];
+  return byName ?? DEFAULT_LOGO_DOMAIN;
+}
+
 function formatNumber(num: number): string {
   if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}M`;
   if (num >= 1_000) return `${(num / 1_000).toFixed(1)}K`;
@@ -163,19 +204,15 @@ export default async function ToolPage({ params }: Props) {
             <div className="relative flex flex-col gap-5 p-5 sm:gap-6 sm:p-8 md:flex-row md:items-start md:justify-between md:p-10">
               <div className="flex items-center gap-5">
                 <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-white/[0.05] ring-1 ring-white/[0.1]">
-                  {tool.logo?.startsWith("http") ? (
-                    <Image
-                      src={tool.logo}
-                      alt={`${tool.name} logo`}
-                      width={56}
-                      height={56}
-                      className="h-14 w-14 rounded-xl object-contain"
-                      sizes="56px"
-                      unoptimized
-                    />
-                  ) : (
-                    <span className="text-4xl">🤖</span>
-                  )}
+                  <Image
+                    src={logoDev(getLogoDevDomain(tool))}
+                    alt={`${tool.name} logo`}
+                    width={56}
+                    height={56}
+                    className="h-14 w-14 rounded-xl object-contain"
+                    sizes="56px"
+                    unoptimized
+                  />
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">
