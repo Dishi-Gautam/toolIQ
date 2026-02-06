@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight, Star, Eye, Heart, Globe, ChevronRight } from "lucide-react";
@@ -163,10 +164,14 @@ export default async function ToolPage({ params }: Props) {
               <div className="flex items-center gap-5">
                 <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-white/[0.05] ring-1 ring-white/[0.1]">
                   {tool.logo?.startsWith("http") ? (
-                    <img
+                    <Image
                       src={tool.logo}
                       alt={`${tool.name} logo`}
+                      width={56}
+                      height={56}
                       className="h-14 w-14 rounded-xl object-contain"
+                      sizes="56px"
+                      unoptimized
                     />
                   ) : (
                     <span className="text-4xl">🤖</span>

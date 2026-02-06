@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -127,8 +128,6 @@ const CONNECTIONS = [
 export default function CategoryShowcase() {
   const [active, setActive] = useState(TABS[0].id);
   const tab = TABS.find((t) => t.id === active) ?? TABS[0];
-  const Icon = tab.icon;
-
   return (
     <div>
       {/* Tabs */}
@@ -312,12 +311,15 @@ export default function CategoryShowcase() {
                     >
                       <div className="flex h-full w-full items-center justify-center rounded-xl border border-white/[0.1] bg-[#0A0F1C]/90 shadow-lg backdrop-blur-md transition-all duration-300 hover:border-cyan-400/40 hover:shadow-[0_0_20px_-4px_rgba(34,211,238,0.3)]">
                         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.92] ring-1 ring-black/10">
-                          <img
+                          <Image
                             src={`https://img.logo.dev/${domain}?token=${LOGO_API_TOKEN}&size=80&format=png`}
                             alt={domain}
+                            width={28}
+                            height={28}
                             className="h-7 w-7 object-contain"
                             draggable={false}
                             referrerPolicy="no-referrer"
+                            sizes="28px"
                           />
                         </div>
                       </div>

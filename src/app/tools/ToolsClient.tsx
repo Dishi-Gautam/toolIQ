@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -350,11 +351,15 @@ export default function ToolsClient({ tools, categories }: Props) {
                           {(() => {
                             const logoSrc = getToolLogo(tool);
                             return logoSrc ? (
-                              <img
+                              <Image
                                 src={logoSrc}
                                 alt={tool.name}
+                                width={28}
+                                height={28}
                                 className="h-7 w-7 rounded-lg object-contain"
                                 loading="lazy"
+                                sizes="28px"
+                                unoptimized
                               />
                             ) : (
                               <Bot className="h-5 w-5 text-cyan-400/70" />
