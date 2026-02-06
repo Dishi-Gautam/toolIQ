@@ -1,119 +1,90 @@
-Tooliq
+# Tooliq
 
-Tooliq is a modern, content-driven directory to discover and explore AI tools across different use cases.
-It focuses on clean UI, fast discovery, and programmatically generated pages from a static dataset.
+Tooliq is a content-driven directory for discovering and exploring AI tools across categories and use cases. It is built for fast browsing, clean presentation, and SEO-friendly, programmatically generated pages powered by a static dataset.
 
-🚀 What this project does
+## What it does
 
-Displays a curated directory of AI tools
+- Displays a curated directory of AI tools
+- Provides listing pages with client-side search, filtering, and sorting
+- Generates detail pages programmatically per tool
+- Builds category- and collection-style pages from the same dataset
+- Optimizes for performance and SEO using static generation
 
-Provides listing pages with search, filter, and sort
+## Key features
 
-Generates detailed pages for each tool programmatically
+- Next.js App Router with TypeScript
+- Static generation + incremental regeneration patterns where applicable
+- SEO-friendly routing and metadata
+- Sitemap and robots configuration
+- Responsive UI with Tailwind CSS (dark mode via `class` strategy)
+- Component primitives from shadcn/ui and Radix
 
-Creates multiple page permutations (by category, use case, etc.)
+## Dataset
 
-Optimized for performance and SEO using static generation
+The directory is generated from a one-time extracted dataset (inspired by public AI tool directories).
 
-🧱 Features
+- Collection method: browser-based extraction (Instant Data Scraper)
+- Runtime behavior: no live scraping or external API calls in production
 
-📄 Home page describing the dataset and purpose
+Common fields:
 
-📂 Listing page with client-side search, filters, and sorting
+- `name`
+- `slug`
+- `category`
+- `description`
+- `pricing`
+- `tags`
+- `website`
 
-🔍 Detail pages for each AI tool
+This approach keeps the application lightweight, deterministic, and easy to deploy.
 
-🔁 Category-based pages generated from the same dataset
+## Tech stack
 
-🧭 Clean global navigation and footer
+- Next.js 14 (App Router)
+- React 18
+- TypeScript
+- Tailwind CSS + `tailwindcss-animate`
+- shadcn/ui + Radix UI
 
-🔎 SEO-ready metadata, sitemap, and robots configuration
+## Getting started
 
-🌗 Responsive design with light & dark mode
+### Prerequisites
 
-🗂 Dataset
+- Node.js 18+ recommended
+- npm (project includes a `package-lock.json`)
 
-Source: Public AI tools directory (inspired by There’s An AI For That)
+### Install
 
-Collection method: One-time browser-based extraction using Instant Data Scraper
+```bash
+npm install
+```
 
-Storage: Static JSON file committed to the repository
+### Run locally
 
-No live scraping or external API calls in production
+```bash
+npm run dev
+```
 
-Fields used:
+Then open `http://localhost:3000` (or the next available port if 3000 is in use).
 
-name
+## Scripts
 
-slug
+- `npm run dev` — start the development server
+- `npm run build` — create a production build
+- `npm run start` — run the production server
+- `npm run lint` — run ESLint
 
-category
+## Deployment
 
-description
+This project is compatible with common Next.js hosting platforms (for example Vercel). For a production deployment, run `npm run build` and `npm run start` or configure the platform to build and serve the Next.js app.
 
-pricing
+## Roadmap
 
-tags
+- Scheduled data refresh (ISR + cron)
+- User-submitted tools with moderation
+- Advanced ranking (featured, trending, most used)
+- Optional external API integrations for enriched metadata
 
-website
+## License
 
-This approach keeps the site lightweight, fast, and deterministic.
-
-🛠 Tech Stack
-
-Next.js 14+ (App Router)
-
-TypeScript
-
-Tailwind CSS
-
-shadcn/ui
-
-Static Site Generation (SSG) + ISR
-
-ESLint & Prettier
-
-Deployed on Vercel
-
-🧠 Design Approach
-
-Visual inspiration from modern directory and SaaS products (Product Hunt–style layouts)
-
-Focus on:
-
-Clear hierarchy
-
-Generous spacing
-
-Minimal but polished UI
-
-Built mobile-first and fully responsive
-
-📈 Performance & SEO
-
-Static generation for fast load times
-
-Programmatic routing using dynamic segments
-
-SEO metadata per page
-
-Sitemap and robots configuration included
-
-🔮 Future Improvements
-
-Scheduled data refresh using ISR and cron jobs
-
-User-submitted tools with moderation
-
-Advanced ranking (trending, most-used, featured)
-
-External API integrations for live updates
-
-🌐 Live Demo
-
-Deployed on Vercel
-
-
-📄 License
-
-This project is built for learning and evaluation purposes.
+Built for learning and evaluation purposes.
