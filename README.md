@@ -84,7 +84,3 @@ This project is compatible with common Next.js hosting platforms (for example Ve
 - User-submitted tools with moderation
 - Advanced ranking (featured, trending, most used)
 - Optional external API integrations for enriched metadata
-
-## License
-
-Built for learning and evaluation purposes.

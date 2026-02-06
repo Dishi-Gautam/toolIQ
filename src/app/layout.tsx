@@ -3,6 +3,7 @@ import Link from "next/link";
 import localFont from "next/font/local";
 import { ChevronRight } from "lucide-react";
 import MobileNav from "@/components/mobile-nav";
+import NavLinks from "@/components/nav-links";
 import { WebsiteJsonLd, OrganizationJsonLd } from "@/components/json-ld";
 import "./globals.css";
 
@@ -84,44 +85,41 @@ export default function RootLayout({
       >
         <div className="noise relative flex min-h-screen flex-col">
           {/* ── Navigation ── */}
-          <header className="sticky top-0 z-50 w-full border-b border-white/[0.06] bg-[#060b14]/80 backdrop-blur-xl">
-            <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-16 sm:px-6">
-              <div className="flex items-center gap-6 sm:gap-10">
-                {/* Logo */}
-                <Link href="/" className="group flex items-center gap-2.5">
-                  <img
-                    src="/logo.svg"
-                    alt="Tooliq"
-                    className="h-7 w-7"
-                  />
-                  <span className="bg-gradient-to-r from-cyan-400 to-sky-400 bg-clip-text text-sm font-extrabold uppercase tracking-[0.15em] text-transparent sm:text-base">
-                    Tooliq
-                  </span>
-                </Link>
+          <header className="fixed left-0 right-0 top-0 z-50 flex justify-center px-4 pt-4 sm:pt-5">
+            <nav className="relative flex h-12 w-full max-w-2xl items-center justify-between rounded-full border border-white/[0.08] bg-[#060b14]/60 px-1.5 shadow-[0_4px_30px_rgba(0,0,0,0.4)] backdrop-blur-2xl backdrop-saturate-[1.8] transition-all duration-500 sm:h-14 sm:px-2">
+              {/* Inner glow highlights */}
+              <div className="pointer-events-none absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+              <div className="pointer-events-none absolute inset-x-6 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-400/[0.06] to-transparent" />
 
-                {/* Nav links — desktop */}
-                <div className="hidden items-center gap-1 md:flex">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className="rounded-lg px-3.5 py-2 text-sm text-white/50 transition-colors hover:text-white"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+              {/* Logo */}
+              <Link
+                href="/"
+                className="group flex shrink-0 items-center gap-2 rounded-full px-3 py-1.5 transition-all duration-200 hover:bg-white/[0.04] sm:px-3.5"
+              >
+                <img
+                  src="/logo.svg"
+                  alt="Tooliq"
+                  className="h-6 w-6 sm:h-7 sm:w-7"
+                />
+                <span className="hidden bg-gradient-to-r from-cyan-400 to-sky-400 bg-clip-text text-xs font-extrabold uppercase tracking-[0.15em] text-transparent sm:inline sm:text-sm">
+                  Tooliq
+                </span>
+              </Link>
 
-              <div className="flex items-center gap-3">
+              {/* Nav links — desktop (client component for active state) */}
+              <NavLinks />
+
+              {/* Right side: CTA + mobile menu */}
+              <div className="flex items-center gap-2">
+                {/* Gradient-bordered CTA button */}
                 <Link
                   href="/tools"
-                  className="group hidden items-center gap-1.5 rounded-lg border border-white/[0.15] px-4 py-2 text-sm font-medium text-white/70 transition-all hover:border-cyan-400/30 hover:text-white sm:inline-flex"
+                  className="nav-cta-gradient group hidden sm:inline-flex"
                 >
-                  Get Started
-                  <span className="flex items-center text-cyan-400">
-                    <ChevronRight className="-mr-0.5 h-3 w-3" />
-                    <ChevronRight className="h-3 w-3" />
+                  {/* Inner fill */}
+                  <span className="relative z-10 flex items-center gap-1.5 rounded-full bg-[#0a1020] px-4 py-1.5 text-sm font-medium text-white/80 transition-colors duration-200 group-hover:text-white sm:px-5 sm:py-2">
+                    Get Started
+                    <ChevronRight className="h-3 w-3 text-cyan-400 transition-transform duration-200 group-hover:translate-x-0.5" />
                   </span>
                 </Link>
 
@@ -130,6 +128,9 @@ export default function RootLayout({
               </div>
             </nav>
           </header>
+
+          {/* Spacer for fixed navbar */}
+          <div className="h-16 sm:h-20" />
 
           {/* ── Page Content ── */}
           <main className="flex-1">{children}</main>

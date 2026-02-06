@@ -1,6 +1,10 @@
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { Star, Bot, Heart } from "lucide-react";
 import type { Tool } from "@/lib/tools-data";
+
+const LOGO_API_TOKEN = "pk_Q2U60apXTeeFjOBPbbJUCw";
+const logoDev = (domain: string) =>
+  `https://img.logo.dev/${domain}?token=${LOGO_API_TOKEN}&size=80&format=png`;
 
 const pricingColors: Record<string, string> = {
   Free: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
@@ -8,6 +12,51 @@ const pricingColors: Record<string, string> = {
   Paid: "bg-amber-500/10 text-amber-400 border-amber-500/20",
   Enterprise: "bg-violet-500/10 text-violet-400 border-violet-500/20",
 };
+
+const NAME_TO_DOMAIN: Record<string, string> = {
+  chatgpt: "openai.com",
+  openai: "openai.com",
+  claude: "claude.ai",
+  anthropic: "claude.ai",
+  gemini: "gemini.google.com",
+  "google gemini": "gemini.google.com",
+  github: "github.com",
+  copilot: "copilot.microsoft.com",
+  "github copilot": "copilot.microsoft.com",
+  midjourney: "midjourney.com",
+  perplexity: "perplexity.ai",
+  deepseek: "deepseek.com",
+  firefly: "adobe.com",
+  "adobe firefly": "adobe.com",
+  huggingface: "huggingface.co",
+  "hugging face": "huggingface.co",
+};
+
+function getLogoDevDomain(tool: Tool): string | null {
+  // Prefer the tool's website domain when available.
+  if (tool.website && tool.website !== "#") {
+    try {
+      const url = new URL(tool.website);
+      const host = url.hostname.replace(/^www\./, "");
+      if (host) return host;
+    } catch {
+      // ignore
+    }
+  }
+
+  // Fallback: map well-known tool names to domains.
+  const byName = NAME_TO_DOMAIN[tool.name.toLowerCase()];
+  return byName ?? null;
+}
+
+function getToolIcon(tool: Tool): string | null {
+  const domain = getLogoDevDomain(tool);
+  if (domain) return logoDev(domain);
+
+  // Last resort: if CSV logo is a valid URL, use it.
+  if (tool.logo && tool.logo.startsWith("http")) return tool.logo;
+  return null;
+}
 
 function formatViews(views: number): string {
   if (views >= 1_000_000) return `${(views / 1_000_000).toFixed(1)}M`;
@@ -18,30 +67,35 @@ function formatViews(views: number): string {
 
 export default function ToolCard({ tool }: { tool: Tool }) {
   const viewsLabel = formatViews(tool.views);
+  const iconSrc = getToolIcon(tool);
 
   return (
     <Link href={`/tools/${tool.slug}`} className="group block">
-      <div className="glow-card h-full rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 transition-all duration-300 sm:rounded-2xl sm:p-5">
+      <div className="glow-card h-full rounded-2xl border border-white/[0.07] bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-5 transition-all duration-300">
         {/* Header: Logo + Name + Pricing */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.05] ring-1 ring-white/[0.08]">
-              {tool.logo && tool.logo.startsWith("http") ? (
-                <img
-                  src={tool.logo}
-                  alt=""
-                  className="h-7 w-7 rounded-lg object-contain"
-                  loading="lazy"
-                />
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.06] ring-1 ring-white/[0.1]">
+              {iconSrc ? (
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.92] ring-1 ring-black/10">
+                  <img
+                    src={iconSrc}
+                    alt={tool.name}
+                    className="h-7 w-7 rounded-md object-contain"
+                    style={{ filter: "brightness(1.05) contrast(1.05)" }}
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
               ) : (
-                <span className="text-lg">🤖</span>
+                <Bot className="h-5 w-5 text-cyan-400/70" />
               )}
             </div>
             <div className="min-w-0">
               <h3 className="truncate text-sm font-semibold text-white transition-colors group-hover:text-cyan-300">
                 {tool.name}
               </h3>
-              <p className="text-xs text-white/40">{tool.category}</p>
+              <p className="text-xs text-white/35">{tool.category}</p>
             </div>
           </div>
           <span
@@ -55,12 +109,12 @@ export default function ToolCard({ tool }: { tool: Tool }) {
         </div>
 
         {/* Description */}
-        <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-white/50">
+        <p className="mt-3.5 line-clamp-2 text-[13px] leading-relaxed text-white/45">
           {tool.description}
         </p>
 
         {/* Footer: Rating + Views + Saves */}
-        <div className="mt-4 flex items-center gap-3 text-xs text-white/30">
+        <div className="mt-4 flex items-center gap-3 border-t border-white/[0.06] pt-3.5 text-xs text-white/30">
           {tool.rating > 0 && (
             <span className="flex items-center gap-1">
               <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
@@ -68,7 +122,12 @@ export default function ToolCard({ tool }: { tool: Tool }) {
             </span>
           )}
           {viewsLabel && <span>{viewsLabel} views</span>}
-          {tool.saves > 0 && <span>♡ {tool.saves}</span>}
+          {tool.saves > 0 && (
+            <span className="flex items-center gap-1">
+              <Heart className="h-3 w-3" />
+              {tool.saves}
+            </span>
+          )}
         </div>
       </div>
     </Link>

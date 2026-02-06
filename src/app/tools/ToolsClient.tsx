@@ -10,9 +10,32 @@ import {
   SlidersHorizontal,
   ChevronLeft,
   ChevronRight,
+  Bot,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Tool } from "@/lib/tools-data";
+
+const LOGO_API_TOKEN = "pk_Q2U60apXTeeFjOBPbbJUCw";
+
+// Helper to get logo from logo.dev API
+function getToolLogo(tool: Tool): string | null {
+  // Try website domain for logo.dev
+  if (tool.website && tool.website !== "#") {
+    try {
+      const url = new URL(tool.website);
+      const domain = url.hostname;
+      return `https://img.logo.dev/${domain}?token=${LOGO_API_TOKEN}`;
+    } catch {
+      // invalid url
+    }
+  }
+
+  // Fallback to existing logo field
+  if (tool.logo && tool.logo.startsWith("http")) return tool.logo;
+
+  return null;
+}
+
 
 const ALL = "All" as const;
 const TOOLS_PER_PAGE = 12;
@@ -191,11 +214,10 @@ export default function ToolsClient({ tools, categories }: Props) {
               <button
                 key={opt.key}
                 onClick={() => setSortKey(opt.key)}
-                className={`shrink-0 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
-                  sortKey === opt.key
-                    ? "bg-white text-black shadow-sm"
-                    : "text-white/40 hover:text-white/70"
-                }`}
+                className={`shrink-0 rounded-lg px-3 py-2 text-xs font-medium transition-all ${sortKey === opt.key
+                  ? "bg-white text-black shadow-sm"
+                  : "text-white/40 hover:text-white/70"
+                  }`}
               >
                 {opt.label}
               </button>
@@ -209,11 +231,10 @@ export default function ToolsClient({ tools, categories }: Props) {
                 <button
                   key={p}
                   onClick={() => setActivePricing(p)}
-                  className={`shrink-0 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
-                    activePricing === p
-                      ? "bg-cyan-500/15 text-cyan-300 ring-1 ring-cyan-500/30"
-                      : "text-white/40 hover:text-white/70"
-                  }`}
+                  className={`shrink-0 rounded-lg px-3 py-2 text-xs font-medium transition-all ${activePricing === p
+                    ? "bg-cyan-500/15 text-cyan-300 ring-1 ring-cyan-500/30"
+                    : "text-white/40 hover:text-white/70"
+                    }`}
                 >
                   {p}
                 </button>
@@ -224,11 +245,10 @@ export default function ToolsClient({ tools, categories }: Props) {
           {/* Category toggle */}
           <button
             onClick={() => setShowCategories(!showCategories)}
-            className={`inline-flex items-center gap-1.5 rounded-xl border px-4 py-2 text-xs font-medium transition-all ${
-              showCategories || activeCategory !== ALL
-                ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
-                : "border-white/[0.08] bg-white/[0.02] text-white/40 hover:text-white/70"
-            }`}
+            className={`inline-flex items-center gap-1.5 rounded-xl border px-4 py-2 text-xs font-medium transition-all ${showCategories || activeCategory !== ALL
+              ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+              : "border-white/[0.08] bg-white/[0.02] text-white/40 hover:text-white/70"
+              }`}
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
             Categories
@@ -262,11 +282,10 @@ export default function ToolsClient({ tools, categories }: Props) {
               <div className="flex flex-wrap gap-2 rounded-2xl border border-white/[0.06] bg-white/[0.015] p-4">
                 <button
                   onClick={() => setActiveCategory(ALL)}
-                  className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${
-                    activeCategory === ALL
-                      ? "border border-white bg-white/[0.08] text-white"
-                      : "border border-white/[0.08] text-white/35 hover:border-white/20 hover:text-white/60"
-                  }`}
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${activeCategory === ALL
+                    ? "border border-white bg-white/[0.08] text-white"
+                    : "border border-white/[0.08] text-white/35 hover:border-white/20 hover:text-white/60"
+                    }`}
                 >
                   All
                 </button>
@@ -274,11 +293,10 @@ export default function ToolsClient({ tools, categories }: Props) {
                   <button
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
-                    className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${
-                      activeCategory === cat
-                        ? "border border-cyan-400/40 bg-cyan-500/10 text-cyan-300"
-                        : "border border-white/[0.08] text-white/35 hover:border-white/20 hover:text-white/60"
-                    }`}
+                    className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${activeCategory === cat
+                      ? "border border-cyan-400/40 bg-cyan-500/10 text-cyan-300"
+                      : "border border-white/[0.08] text-white/35 hover:border-white/20 hover:text-white/60"
+                      }`}
                   >
                     {cat}
                   </button>
@@ -328,17 +346,20 @@ export default function ToolsClient({ tools, categories }: Props) {
                   <div className="glow-card h-full rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 transition-all duration-300 sm:rounded-2xl sm:p-5">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.05] ring-1 ring-white/[0.08]">
-                          {tool.logo?.startsWith("http") ? (
-                            <img
-                              src={tool.logo}
-                              alt=""
-                              className="h-7 w-7 rounded-lg object-contain"
-                              loading="lazy"
-                            />
-                          ) : (
-                            <span className="text-lg">🤖</span>
-                          )}
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.05] ring-1 ring-white/[0.08] overflow-hidden">
+                          {(() => {
+                            const logoSrc = getToolLogo(tool);
+                            return logoSrc ? (
+                              <img
+                                src={logoSrc}
+                                alt={tool.name}
+                                className="h-7 w-7 rounded-lg object-contain"
+                                loading="lazy"
+                              />
+                            ) : (
+                              <Bot className="h-5 w-5 text-cyan-400/70" />
+                            );
+                          })()}
                         </div>
                         <div className="min-w-0">
                           <h3 className="truncate text-sm font-semibold text-white transition-colors group-hover:text-cyan-300">
@@ -350,10 +371,9 @@ export default function ToolsClient({ tools, categories }: Props) {
                         </div>
                       </div>
                       <span
-                        className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-medium ${
-                          pricingColors[tool.pricing] ??
+                        className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-medium ${pricingColors[tool.pricing] ??
                           "bg-white/5 text-white/50 border-white/10"
-                        }`}
+                          }`}
                       >
                         {tool.pricing}
                       </span>
@@ -427,11 +447,10 @@ export default function ToolsClient({ tools, categories }: Props) {
                   key={p}
                   onClick={() => goToPage(p)}
                   aria-current={p === safePage ? "page" : undefined}
-                  className={`inline-flex h-10 w-10 items-center justify-center rounded-xl text-sm font-medium transition-all ${
-                    p === safePage
-                      ? "border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 shadow-[0_0_12px_-3px_rgba(56,189,248,0.2)]"
-                      : "border border-white/[0.08] bg-white/[0.02] text-white/40 hover:border-white/[0.15] hover:text-white"
-                  }`}
+                  className={`inline-flex h-10 w-10 items-center justify-center rounded-xl text-sm font-medium transition-all ${p === safePage
+                    ? "border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 shadow-[0_0_12px_-3px_rgba(56,189,248,0.2)]"
+                    : "border border-white/[0.08] bg-white/[0.02] text-white/40 hover:border-white/[0.15] hover:text-white"
+                    }`}
                 >
                   {p}
                 </button>

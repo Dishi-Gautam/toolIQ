@@ -39,6 +39,18 @@
   body {
     @apply bg-background text-foreground;
     background-color: #060b14;
+    cursor: url('/cursor.svg') 0 0, auto;
+  }
+
+  /* Custom cursors for interactive elements */
+  a, button, [role="button"], input[type="submit"], input[type="button"], 
+  select, [onclick], .cursor-pointer {
+    cursor: url('/cursor-pointer.svg') 16 16, pointer;
+  }
+
+  input[type="text"], input[type="email"], input[type="search"], 
+  textarea, [contenteditable] {
+    cursor: url('/cursor.svg') 0 0, text;
   }
 
   ::selection {
@@ -88,10 +100,34 @@
 .dot-grid {
   background-image: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.05) 1px,
+    rgba(255, 255, 255, 0.06) 1px,
     transparent 1px
   );
-  background-size: 28px 28px;
+  background-size: 24px 24px;
+}
+
+/* ── Matrix / binary overlay (decorative) ── */
+.matrix-overlay {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 40px,
+      rgba(56, 189, 248, 0.15) 40px,
+      rgba(56, 189, 248, 0.15) 41px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 40px,
+      rgba(56, 189, 248, 0.15) 40px,
+      rgba(56, 189, 248, 0.15) 41px
+    );
 }
 
 /* ── Light beam cone effect ── */
@@ -135,14 +171,17 @@
 
 /* ── Glass stat card (hero floating cards) ── */
 .glass-stat-card {
-  background: rgba(6, 11, 20, 0.65);
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.75), rgba(6, 11, 20, 0.8));
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 16px;
-  padding: 24px 28px;
-  min-width: 220px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(56, 189, 248, 0.1);
+  border-radius: 14px;
+  padding: 18px 22px;
+  min-width: 190px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 /* ── Glass morphism ── */
@@ -157,7 +196,31 @@
 .glow-card {
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.35s cubic-bezier(0.21, 0.47, 0.32, 0.98);
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.6), rgba(6, 11, 20, 0.8));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Top gradient border accent */
+.glow-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(56, 189, 248, 0.25) 30%,
+    rgba(125, 211, 252, 0.4) 50%,
+    rgba(56, 189, 248, 0.25) 70%,
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
 .glow-card::before {
@@ -168,10 +231,10 @@
   padding: 1px;
   background: linear-gradient(
     135deg,
-    rgba(56, 189, 248, 0.3),
+    rgba(56, 189, 248, 0.25),
     transparent 40%,
     transparent 60%,
-    rgba(56, 189, 248, 0.15)
+    rgba(56, 189, 248, 0.12)
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -187,9 +250,15 @@
   opacity: 1;
 }
 
+.glow-card:hover::after {
+  opacity: 1;
+}
+
 .glow-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 40px -12px rgba(56, 189, 248, 0.12);
+  transform: translateY(-3px);
+  box-shadow:
+    0 4px 24px -6px rgba(56, 189, 248, 0.1),
+    0 0 0 1px rgba(56, 189, 248, 0.06);
 }
 
 /* ── Noise texture overlay ── */
@@ -228,12 +297,242 @@
   background-size: 64px 64px;
 }
 
+/* ── Particle stream ── */
+
+/* ── Navbar gradient border spin ── */
+@keyframes border-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.nav-cta-gradient {
+  position: relative;
+  border-radius: 9999px;
+  padding: 1px;
+  overflow: hidden;
+}
+
+.nav-cta-gradient::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(
+    from 0deg,
+    #22d3ee,
+    #38bdf8,
+    #818cf8,
+    #c084fc,
+    #f472b6,
+    #fb923c,
+    #facc15,
+    #22d3ee
+  );
+  animation: border-spin 4s linear infinite;
+  opacity: 0.55;
+  transition: opacity 0.3s ease;
+}
+
+.nav-cta-gradient:hover::before {
+  opacity: 1;
+}
+
+.nav-cta-gradient::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(
+    from 0deg,
+    #22d3ee,
+    #38bdf8,
+    #818cf8,
+    #c084fc,
+    #f472b6,
+    #fb923c,
+    #facc15,
+    #22d3ee
+  );
+  animation: border-spin 4s linear infinite;
+  opacity: 0.35;
+  filter: blur(6px);
+}
+
+@keyframes particle-rise {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(-30px) scale(0.3);
+    opacity: 0;
+  }
+}
+
+@keyframes particle-drift {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  85% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-110vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
+/* ── SaaS-level animations ── */
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes draw-line {
+  0% {
+    stroke-dashoffset: 1000;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes radial-pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.3;
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes float-medium {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  33% {
+    transform: translateY(-6px) translateX(3px);
+  }
+  66% {
+    transform: translateY(-3px) translateX(-3px);
+  }
+}
+
+@keyframes shimmer-line {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes orbit-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.1),
+                0 0 40px rgba(56, 189, 248, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.2),
+                0 0 60px rgba(56, 189, 248, 0.1);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+.animate-float-medium {
+  animation: float-medium 8s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-orbit-glow {
+  animation: orbit-glow 4s ease-in-out infinite;
+}
+
+/* ── Infinite marquee scroll ── */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* ── Smooth page transitions ── */
+main {
+  animation: page-fade-in 0.4s cubic-bezier(0.21, 0.47, 0.32, 0.98);
+}
+
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ── Cross markers (decorative) ── */
 .cross-marker {
   position: absolute;
   width: 12px;
   height: 12px;
   opacity: 0.15;
+  animation: pulse-glow 5s ease-in-out infinite;
 }
 
 .cross-marker::before,
@@ -256,3 +555,4 @@
   top: 50%;
   transform: translateY(-50%);
 }
+
